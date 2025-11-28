@@ -1,0 +1,50 @@
+[
+  {
+    "id": "intro",
+    "text": "Good evening and welcome to the evening news. I'm Sarah, and here are tonight's top stories.",
+    "mood": "neutral",
+    "view": "upper",
+    "gestures": ["👋"],
+    "pauseAfter": 1.0
+  },
+  {
+    "id": "breaking_news",
+    "text": "In breaking news tonight, scientists have announced a major breakthrough in artificial intelligence technology.",
+    "mood": "neutral",
+    "view": "upper",
+    "gestures": [],
+    "pauseAfter": 0.5
+  },
+  {
+    "id": "ai_details",
+    "text": "The new system demonstrates unprecedented capabilities in understanding and generating human language.",
+    "mood": "happy",
+    "view": "mid",
+    "gestures": ["👍"],
+    "pauseAfter": 1.0
+  },
+  {
+    "id": "transition",
+    "text": "Moving on to business news.",
+    "mood": "neutral",
+    "view": "upper",
+    "gestures": [],
+    "pauseAfter": 0.5
+  },
+  {
+    "id": "business",
+    "text": "Stock markets reached record highs today as investors reacted positively to the latest economic data.",
+    "mood": "happy",
+    "view": "upper",
+    "gestures": [],
+    "pauseAfter": 0.5
+  },
+  {
+    "id": "outro",
+    "text": "That's all for tonight's news. Thank you for watching, and we'll see you tomorrow. Good night.",
+    "mood": "happy",
+    "view": "upper",
+    "gestures": ["👋"],
+    "pauseAfter": 0
+  }
+]

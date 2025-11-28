@@ -1,0 +1,39 @@
+[
+    {
+        "text": "Good evening, welcome to tonight's news.",
+        "mood": "neutral",
+        "view": "upper"
+    },
+    {
+        "text": "Our top story tonight is very exciting!",
+        "mood": "happy",
+        "view": "upper",
+        "gesture": "nod"
+    },
+    {
+        "text": "Breaking news: A new discovery was made today.",
+        "mood": "neutral",
+        "view": "mid"
+    },
+    {
+        "text": "Scientists are thrilled about this breakthrough.",
+        "mood": "happy",
+        "gesture": "thumbsUp"
+    },
+    {
+        "text": "Unfortunately, there are some concerns.",
+        "mood": "sad",
+        "view": "upper"
+    },
+    {
+        "text": "This is a serious matter that requires attention.",
+        "mood": "angry",
+        "view": "head"
+    },
+    {
+        "text": "Thank you for watching. Good night!",
+        "mood": "happy",
+        "view": "upper",
+        "gesture": "wave"
+    }
+]

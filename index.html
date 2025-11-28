@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsAnchor Pro | AI Broadcast Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js/+esm",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/",
+            "talkinghead": "https://cdn.jsdelivr.net/gh/met4citizen/TalkingHead@1.6/modules/talkinghead.mjs"
+        }
+    }
+    </script>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Initializing Studio</div>
+            <div class="loading-progress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="loading-status" id="loadingStatus">Loading TalkingHead module...</div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-icon">📺</span>
+                    <span class="logo-text">NewsAnchor<span class="logo-accent">Pro</span></span>
+                </div>
+                <span class="version-badge">v2.2</span>
+            </div>
+            <div class="header-center">
+                <div class="status-indicators">
+                    <div class="status-item" id="statusAvatar">
+                        <span class="status-dot"></span>
+                        <span class="status-label">Avatar</span>
+                    </div>
+                    <div class="status-item" id="statusTTS">
+                        <span class="status-dot"></span>
+                        <span class="status-label">TTS</span>
+                    </div>
+                    <div class="status-item" id="statusLipSync">
+                        <span class="status-dot"></span>
+                        <span class="status-label">Lip Sync</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="live-indicator" id="liveIndicator">
+                    <span class="live-dot"></span>
+                    <span class="live-text">LIVE</span>
+                </div>
+                <div class="time-display" id="timeDisplay">00:00:00</div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Preview Panel -->
+            <section class="preview-section">
+                <div class="preview-container">
+                    <!-- Broadcast Frame -->
+                    <div class="broadcast-frame">
+                        <!-- Background Layer -->
+                        <div class="background-layer" id="backgroundLayer">
+                            <img src="" alt="Background" id="backgroundImage" class="background-image">
+                        </div>
+                        
+                        <!-- Avatar Container -->
+                        <div class="avatar-container" id="avatarContainer"></div>
+                        
+                        <!-- Broadcast Overlays -->
+                        <div class="broadcast-overlays">
+                            <!-- Lower Third -->
+                            <div class="lower-third" id="lowerThird">
+                                <div class="lower-third-name" id="anchorName">AI News Anchor</div>
+                                <div class="lower-third-title" id="anchorTitle">Breaking News</div>
+                            </div>
+                            
+                            <!-- News Ticker -->
+                            <div class="news-ticker" id="newsTicker">
+                                <div class="ticker-label">BREAKING</div>
+                                <div class="ticker-content">
+                                    <span class="ticker-text" id="tickerText">Welcome to NewsAnchor Pro - Your AI-powered broadcast studio</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Subtitles -->
+                            <div class="subtitles-container" id="subtitlesContainer">
+                                <div class="subtitles-text" id="subtitlesText"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Recording Indicator -->
+                        <div class="recording-indicator" id="recordingIndicator">
+                            <span class="rec-dot"></span>
+                            <span class="rec-text">REC</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Broadcast Controls -->
+                    <div class="broadcast-controls">
+                        <button class="control-btn" id="btnPlay" title="Start Broadcast">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                        </button>
+                        <button class="control-btn" id="btnPause" title="Pause" disabled>
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                        </button>
+                        <button class="control-btn" id="btnStop" title="Stop" disabled>
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h12v12H6z"/></svg>
+                        </button>
+                        <div class="control-divider"></div>
+                        <button class="control-btn record-btn" id="btnRecord" title="Record">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg>
+                        </button>
+                        <div class="control-divider"></div>
+                        <div class="volume-control">
+                            <svg viewBox="0 0 24 24" fill="currentColor" class="volume-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                            <input type="range" id="volumeSlider" min="0" max="100" value="80" class="slider-input">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Control Panels -->
+            <aside class="control-panels">
+                <!-- Tabs -->
+                <div class="panel-tabs">
+                    <button class="tab-btn active" data-tab="script">Script</button>
+                    <button class="tab-btn" data-tab="avatar">Avatar</button>
+                    <button class="tab-btn" data-tab="scene">Scene</button>
+                    <button class="tab-btn" data-tab="audio">Audio</button>
+                </div>
+
+                <!-- Tab Contents -->
+                <div class="tab-contents">
+                    <!-- Script Tab -->
+                    <div class="tab-content active" id="tab-script">
+                        <div class="panel-section">
+                            <label class="section-label">Broadcast Script</label>
+                            <textarea id="scriptInput" class="script-textarea" placeholder="Enter your news script here...
+
+Example: Good evening and welcome to the evening news. Tonight's top story covers the latest developments in artificial intelligence technology."></textarea>
+                            <div class="char-count"><span id="charCount">0</span> / 2000</div>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">Script JSON (Automated)</label>
+                            <div class="file-upload">
+                                <input type="file" id="scriptJsonInput" accept=".json" class="file-input">
+                                <label for="scriptJsonInput" class="file-label">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                                    Upload Script JSON
+                                </label>
+                            </div>
+                            <p class="help-text">JSON format: [{text, mood, gesture, view, voice, speed}]</p>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">Lower Third</label>
+                            <div class="input-group">
+                                <input type="text" id="inputAnchorName" class="text-input" placeholder="Anchor Name" value="AI News Anchor">
+                                <input type="text" id="inputAnchorTitle" class="text-input" placeholder="Title/Headline" value="Breaking News">
+                            </div>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">News Ticker</label>
+                            <input type="text" id="inputTicker" class="text-input" placeholder="Breaking news ticker text..." value="Welcome to NewsAnchor Pro - Your AI-powered broadcast studio">
+                        </div>
+                        
+                        <div class="panel-section">
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="chkShowLowerThird" checked>
+                                    <span class="checkbox-custom"></span>
+                                    Show Lower Third
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="chkShowTicker" checked>
+                                    <span class="checkbox-custom"></span>
+                                    Show Ticker
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="chkShowSubtitles" checked>
+                                    <span class="checkbox-custom"></span>
+                                    Show Subtitles
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Avatar Tab -->
+                    <div class="tab-content" id="tab-avatar">
+                        <div class="panel-section">
+                            <label class="section-label">Select Avatar</label>
+                            <div class="avatar-grid" id="avatarGrid">
+                                <!-- Avatars populated by JS -->
+                            </div>
+                        </div>
+                        
+                        <div class="panel-section custom-avatar-box">
+                            <label class="section-label">Load Custom Avatar</label>
+                            
+                            <!-- Upload Option -->
+                            <div class="file-upload">
+                                <input type="file" id="customAvatarInput" accept=".glb" class="file-input">
+                                <label for="customAvatarInput" class="file-label">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                                    Upload GLB File
+                                </label>
+                            </div>
+                            
+                            <!-- URL Option -->
+                            <div class="url-input-group">
+                                <input type="text" id="customAvatarUrl" class="text-input" placeholder="./avatars/my-avatar.glb">
+                                <button id="btnLoadAvatarUrl" class="btn-action">Load</button>
+                            </div>
+                            
+                            <!-- Body Type -->
+                            <div class="body-type-row">
+                                <span class="body-label">Body Type:</span>
+                                <select id="avatarBodyType" class="select-input select-small">
+                                    <option value="F">Female</option>
+                                    <option value="M">Male</option>
+                                </select>
+                            </div>
+                            
+                            <p class="help-text">GLB files must have Oculus Visemes for lip-sync</p>
+                            
+                            <!-- Help Accordion -->
+                            <details class="help-accordion">
+                                <summary>📝 How to add permanent avatars</summary>
+                                <div class="accordion-content">
+                                    <ol>
+                                        <li>Place your <code>.glb</code> file in <code>avatars/</code></li>
+                                        <li>Open <code>js/config.js</code></li>
+                                        <li>Add entry to <code>customAvatars</code> array</li>
+                                        <li>Refresh browser</li>
+                                    </ol>
+                                </div>
+                            </details>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">Avatar Mood</label>
+                            <div class="mood-selector">
+                                <button class="mood-btn active" data-mood="neutral">😐 Neutral</button>
+                                <button class="mood-btn" data-mood="happy">😊 Happy</button>
+                                <button class="mood-btn" data-mood="sad">😢 Sad</button>
+                                <button class="mood-btn" data-mood="angry">😠 Angry</button>
+                                <button class="mood-btn" data-mood="fear">😨 Fear</button>
+                                <button class="mood-btn" data-mood="love">😍 Love</button>
+                            </div>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">Gestures</label>
+                            <div class="gesture-buttons">
+                                <button class="gesture-btn" data-gesture="wave">👋 Wave</button>
+                                <button class="gesture-btn" data-gesture="thumbsUp">👍 Thumbs Up</button>
+                                <button class="gesture-btn" data-gesture="think">🤔 Think</button>
+                                <button class="gesture-btn" data-gesture="nod">👆 Nod</button>
+                            </div>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">Camera View</label>
+                            <div class="view-selector">
+                                <button class="view-btn" data-view="full">Full Body</button>
+                                <button class="view-btn active" data-view="upper">Upper Body</button>
+                                <button class="view-btn" data-view="mid">Mid Shot</button>
+                                <button class="view-btn" data-view="head">Head</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scene Tab -->
+                    <div class="tab-content" id="tab-scene">
+                        <div class="panel-section">
+                            <label class="section-label">Background</label>
+                            <div class="background-grid" id="backgroundGrid">
+                                <!-- Backgrounds populated by JS -->
+                            </div>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">Custom Background</label>
+                            <div class="file-upload">
+                                <input type="file" id="customBgInput" accept="image/*" class="file-input">
+                                <label for="customBgInput" class="file-label">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                                    Upload Image
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">Overlay Style</label>
+                            <select id="overlayStyle" class="select-input">
+                                <option value="modern">Modern</option>
+                                <option value="classic">Classic</option>
+                                <option value="minimal">Minimal</option>
+                                <option value="breaking">Breaking News</option>
+                            </select>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">Lower Third Color</label>
+                            <div class="color-presets">
+                                <button class="color-btn active" data-color="#dc2626" style="background: #dc2626"></button>
+                                <button class="color-btn" data-color="#2563eb" style="background: #2563eb"></button>
+                                <button class="color-btn" data-color="#059669" style="background: #059669"></button>
+                                <button class="color-btn" data-color="#7c3aed" style="background: #7c3aed"></button>
+                                <button class="color-btn" data-color="#ea580c" style="background: #ea580c"></button>
+                                <input type="color" id="customColor" class="color-input" value="#dc2626">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Audio Tab -->
+                    <div class="tab-content" id="tab-audio">
+                        <div class="panel-section">
+                            <label class="section-label">TTS Engine</label>
+                            <select id="ttsEngine" class="select-input">
+                                <option value="headtts">HeadTTS (Neural + LipSync)</option>
+                                <option value="browser">Browser TTS (Free)</option>
+                                <option value="google">Google Cloud TTS</option>
+                            </select>
+                        </div>
+                        
+                        <!-- HeadTTS Voice Section -->
+                        <div class="panel-section" id="headttsVoiceSection">
+                            <label class="section-label">HeadTTS Voice</label>
+                            <select id="headttsVoice" class="select-input">
+                                <option value="af_bella">Bella (Female US)</option>
+                                <option value="af_nicole">Nicole (Female US)</option>
+                                <option value="af_sarah">Sarah (Female US)</option>
+                                <option value="am_adam">Adam (Male US)</option>
+                                <option value="am_michael">Michael (Male US)</option>
+                                <option value="am_fenrir">Fenrir (Male US)</option>
+                                <option value="bf_emma">Emma (Female UK)</option>
+                                <option value="bm_george">George (Male UK)</option>
+                            </select>
+                            <p class="help-text">Neural voices with automatic Oculus viseme lip-sync</p>
+                        </div>
+                        
+                        <!-- Browser Voice Section -->
+                        <div class="panel-section" id="browserVoiceSection" style="display: none;">
+                            <label class="section-label">Browser Voice</label>
+                            <select id="browserVoice" class="select-input">
+                                <option value="">Loading voices...</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Google TTS Section -->
+                        <div class="panel-section" id="googleVoiceSection" style="display: none;">
+                            <label class="section-label">Google Voice</label>
+                            <select id="googleVoice" class="select-input">
+                                <option value="en-US-Standard-A">en-US-Standard-A (Female)</option>
+                                <option value="en-US-Standard-B">en-US-Standard-B (Male)</option>
+                                <option value="en-US-Standard-C">en-US-Standard-C (Female)</option>
+                                <option value="en-US-Standard-D">en-US-Standard-D (Male)</option>
+                                <option value="en-US-Wavenet-A">en-US-Wavenet-A (Female)</option>
+                                <option value="en-US-Wavenet-B">en-US-Wavenet-B (Male)</option>
+                            </select>
+                            <div class="api-key-section">
+                                <label class="section-label">API Key</label>
+                                <input type="password" id="googleApiKey" class="text-input" placeholder="Enter Google Cloud API Key">
+                            </div>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">Speech Rate</label>
+                            <div class="slider-group">
+                                <input type="range" id="speechRate" min="0.5" max="1.5" step="0.1" value="1" class="slider-input">
+                                <span class="slider-value" id="speechRateValue">1.0x</span>
+                            </div>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">Pitch</label>
+                            <div class="slider-group">
+                                <input type="range" id="speechPitch" min="0.5" max="1.5" step="0.1" value="1" class="slider-input">
+                                <span class="slider-value" id="speechPitchValue">1.0</span>
+                            </div>
+                        </div>
+                        
+                        <div class="panel-divider"></div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">Pre-recorded Audio</label>
+                            <div class="file-upload">
+                                <input type="file" id="audioInput" accept="audio/*" class="file-input">
+                                <label for="audioInput" class="file-label">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+                                    Upload Audio
+                                </label>
+                            </div>
+                            <div id="audioPreview" class="audio-preview" style="display: none;">
+                                <audio id="audioPlayer" controls></audio>
+                            </div>
+                        </div>
+                        
+                        <div class="panel-section">
+                            <label class="section-label">Lip Sync Data (Optional)</label>
+                            <div class="file-upload">
+                                <input type="file" id="lipsyncInput" accept=".json" class="file-input">
+                                <label for="lipsyncInput" class="file-label">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                                    Upload Viseme JSON
+                                </label>
+                            </div>
+                            <p class="help-text">Rhubarb Lip Sync JSON format</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-left">
+                <span class="footer-text">NewsAnchor Pro v2.2</span>
+            </div>
+            <div class="footer-center">
+                <span class="footer-status" id="footerStatus">Ready</span>
+            </div>
+            <div class="footer-right">
+                <span class="footer-text">Powered by TalkingHead + HeadTTS</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
