@@ -67,7 +67,7 @@ const navItems = [
     icon: GraduationCap,
   },
   {
-    title: "Education",
+    title: "Learning",
     href: "/education",
     icon: BookOpen,
   },

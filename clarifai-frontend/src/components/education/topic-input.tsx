@@ -8,14 +8,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Search,
   Sparkles,
-  GraduationCap,
-  BookOpen,
-  Beaker,
+  TrendingUp,
+  Building2,
+  Landmark,
   Globe,
-  Calculator,
-  Music,
-  Palette,
-  Code,
+  Cpu,
+  Leaf,
 } from "lucide-react";
 
 interface TopicInputProps {
@@ -33,12 +31,12 @@ const DIFFICULTY_OPTIONS = [
 const CARD_COUNT_OPTIONS = [5, 10, 15, 20];
 
 const SUGGESTED_TOPICS = [
-  { icon: Beaker, label: "Science", topics: ["Photosynthesis", "Newton's Laws", "DNA Structure"] },
-  { icon: Globe, label: "History", topics: ["World War II", "Roman Empire", "French Revolution"] },
-  { icon: Calculator, label: "Math", topics: ["Calculus Basics", "Linear Algebra", "Statistics"] },
-  { icon: Code, label: "Technology", topics: ["Machine Learning", "Cybersecurity", "Cloud Computing"] },
-  { icon: BookOpen, label: "Literature", topics: ["Shakespeare", "Greek Mythology", "Poetry Analysis"] },
-  { icon: Palette, label: "Arts", topics: ["Renaissance Art", "Music Theory", "Art History"] },
+  { icon: TrendingUp, label: "Economy", topics: ["Union Budget 2024", "PLI Schemes", "India GDP Growth"] },
+  { icon: Building2, label: "Infrastructure", topics: ["Mumbai Coastal Road", "Mumbai Metro Expansion", "MTHL Sea Link"] },
+  { icon: Landmark, label: "Policy", topics: ["New Criminal Laws 2024", "DPDP Act", "Unified Pension Scheme"] },
+  { icon: Cpu, label: "Technology", topics: ["India Semiconductor Mission", "Digital India", "UPI Global Expansion"] },
+  { icon: Globe, label: "International", topics: ["G20 India Presidency", "BRICS Expansion", "India-Middle East Corridor"] },
+  { icon: Leaf, label: "Environment", topics: ["PM Surya Ghar Yojana", "Green Hydrogen Mission", "Climate Action Plan"] },
 ];
 
 export function TopicInput({ onSubmit, isLoading, className }: TopicInputProps) {
@@ -68,7 +66,7 @@ export function TopicInput({ onSubmit, isLoading, className }: TopicInputProps) 
             {/* Topic Input */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
-                What would you like to study?
+                What current affairs topic would you like to learn?
               </label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -79,7 +77,7 @@ export function TopicInput({ onSubmit, isLoading, className }: TopicInputProps) 
                     setTopic(e.target.value);
                     setShowSuggestions(e.target.value.length === 0);
                   }}
-                  placeholder="e.g., Photosynthesis, World War II, Machine Learning..."
+                  placeholder="e.g., Union Budget 2024, Mumbai Metro, G20 Summit..."
                   className="w-full h-12 pl-10 pr-4 rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
                   disabled={isLoading}
                 />
@@ -166,8 +164,8 @@ export function TopicInput({ onSubmit, isLoading, className }: TopicInputProps) 
       {showSuggestions && !isLoading && (
         <div className="space-y-4">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <GraduationCap className="w-4 h-4" />
-            <span>Popular study topics</span>
+            <TrendingUp className="w-4 h-4" />
+            <span>Trending current affairs topics</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
