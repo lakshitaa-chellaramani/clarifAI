@@ -289,16 +289,33 @@ export default function ResearchPage() {
       cleanupRef.current();
     }
 
+    let receivedData = false;
+    let timeoutId: NodeJS.Timeout;
+
+    // Timeout fallback - if no data received in 3 seconds, use demo
+    timeoutId = setTimeout(() => {
+      if (!receivedData) {
+        console.log("Timeout: No response from API, using demo data");
+        if (cleanupRef.current) {
+          cleanupRef.current();
+        }
+        cleanupRef.current = loadDemoResearch();
+      }
+    }, 3000);
+
     const cleanup = streamResearchGraph(
       query,
       depth,
       // On metadata
       (meta) => {
+        receivedData = true;
+        clearTimeout(timeoutId);
         setMetadata({ topic: meta.topic, summary: meta.summary });
         setIsLoading(false);
       },
       // On node
       ({ node, edges, progress: p }) => {
+        receivedData = true;
         setData(prev => ({
           nodes: [...prev.nodes, node as unknown as ResearchNode],
           edges: [...prev.edges, ...edges.map(e => ({ ...e } as ResearchEdge))]
@@ -316,12 +333,16 @@ export default function ResearchPage() {
       },
       // On error - fallback to demo data
       (err) => {
+        clearTimeout(timeoutId);
         console.log("API unavailable, using demo data:", err);
         cleanupRef.current = loadDemoResearch();
       }
     );
 
-    cleanupRef.current = cleanup;
+    cleanupRef.current = () => {
+      clearTimeout(timeoutId);
+      cleanup();
+    };
   }, [query, depth, loadDemoResearch]);
 
   const handleReset = () => {
