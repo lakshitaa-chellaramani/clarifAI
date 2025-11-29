@@ -13,11 +13,10 @@ ClarifAI is a comprehensive news verification platform that combines real-time f
 
 ## Demo
 
-https://github.com/user-attachments/assets/clarifai-demo.mp4
-
+https://drive.google.com/file/d/1wtaZkDAYbWokmY-Xxf2b8BC0rxzWLu8i/view?usp=sharing
 https://github.com/user-attachments/assets/b1234567-89ab-cdef-0123-456789abcdef
 
-[Watch the demo video](./clarifai-demo.mp4)
+[Watch the demo video](https://drive.google.com/file/d/1wtaZkDAYbWokmY-Xxf2b8BC0rxzWLu8i/view?usp=sharing)
 
 ---
 
