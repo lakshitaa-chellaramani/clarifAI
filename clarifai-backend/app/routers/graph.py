@@ -1,7 +1,11 @@
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
 from typing import List, Optional
+import json
+import asyncio
 
 from app.services.graph_service import graph_service
+from app.services.narrative_graph_service import narrative_graph_service
 
 router = APIRouter(prefix="/graph", tags=["Knowledge Graph"])
 
@@ -81,3 +85,73 @@ async def get_entities(topic: Optional[str] = None):
     ]
 
     return {"entities": entities, "total": len(entities)}
+
+
+@router.get("/narrative")
+async def get_narrative_graph(topic: str):
+    """
+    Generate a narrative graph for a topic using AI.
+    Returns nodes and edges in the narrative graph format.
+    """
+    try:
+        result = narrative_graph_service.generate_narrative_graph(topic)
+        return result
+    except Exception as e:
+        print(f"Error generating narrative graph: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/narrative/stream")
+async def stream_narrative_graph(topic: str):
+    """
+    Stream narrative graph data node by node for real-time visualization.
+    Uses Server-Sent Events (SSE) format.
+    """
+    async def generate():
+        try:
+            # Get the full narrative graph
+            result = narrative_graph_service.generate_narrative_graph(topic)
+            nodes = result.get("nodes", [])
+            edges = result.get("edges", [])
+
+            # Send metadata first
+            yield f"data: {json.dumps({'type': 'metadata', 'topic': result.get('topic'), 'total_nodes': len(nodes), 'total_edges': len(edges)})}\n\n"
+            await asyncio.sleep(0.1)
+
+            # Stream nodes one by one with delay
+            sent_node_ids = set()
+            for i, node in enumerate(nodes):
+                sent_node_ids.add(node["id"])
+
+                # Find edges that can be sent (both source and target nodes have been sent)
+                relevant_edges = [
+                    edge for edge in edges
+                    if edge["source"] in sent_node_ids and edge["target"] in sent_node_ids
+                ]
+
+                # Only send new edges
+                new_edges = [e for e in relevant_edges if not e.get("_sent")]
+                for e in new_edges:
+                    e["_sent"] = True
+
+                # Clean edges before sending
+                clean_edges = [{k: v for k, v in e.items() if k != "_sent"} for e in new_edges]
+
+                yield f"data: {json.dumps({'type': 'node', 'node': node, 'edges': clean_edges, 'progress': ((i + 1) / len(nodes)) * 100})}\n\n"
+                await asyncio.sleep(0.8)  # Delay between nodes for animation effect
+
+            # Send completion message
+            yield f"data: {json.dumps({'type': 'complete', 'total_nodes': len(nodes), 'total_edges': len(edges)})}\n\n"
+
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'error', 'message': str(e)})}\n\n"
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "Access-Control-Allow-Origin": "*",
+        }
+    )

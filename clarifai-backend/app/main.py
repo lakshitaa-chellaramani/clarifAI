@@ -8,7 +8,10 @@ from app.routers import (
     sources_router,
     claims_router,
     graph_router,
-    anchor_router
+    anchor_router,
+    research_router,
+    daily_router,
+    education_router
 )
 from app.services.graph_service import graph_service
 
@@ -36,6 +39,9 @@ app.include_router(sources_router)
 app.include_router(claims_router)
 app.include_router(graph_router)
 app.include_router(anchor_router)
+app.include_router(research_router)
+app.include_router(daily_router)
+app.include_router(education_router)
 
 
 @app.get("/")

@@ -13,6 +13,10 @@ import {
   ChevronLeft,
   ChevronRight,
   Shield,
+  Network,
+  GraduationCap,
+  Sparkles,
+  BookOpen,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +30,11 @@ const navItems = [
     title: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
+  },
+  {
+    title: "Daily Digest",
+    href: "/daily",
+    icon: Sparkles,
   },
   {
     title: "Today's News",
@@ -46,6 +55,21 @@ const navItems = [
     title: "AI Anchor",
     href: "/anchor",
     icon: Video,
+  },
+  {
+    title: "Narrative Graph",
+    href: "/narrative",
+    icon: Network,
+  },
+  {
+    title: "Research Hub",
+    href: "/research",
+    icon: GraduationCap,
+  },
+  {
+    title: "Education",
+    href: "/education",
+    icon: BookOpen,
   },
   {
     title: "Analytics",

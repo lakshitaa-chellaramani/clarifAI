@@ -13,6 +13,7 @@ import {
   Search,
   MessageSquare,
   Video,
+  Sparkles,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -222,7 +223,13 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <QuickAction
+          title="Daily Digest"
+          description="Swipe through today's top stories"
+          icon={Sparkles}
+          href="/daily"
+        />
         <QuickAction
           title="Browse News"
           description="Explore today's fact-checked stories"
